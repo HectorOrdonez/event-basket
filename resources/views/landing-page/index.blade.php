@@ -9,5 +9,9 @@
 <body>
 <h1>Welcome to Event Basket</h1>
 <h2>Your go-to shop for all things event related</h2>
+
+<p>
+    Product {{ $productId }}, stock: {{ $quantity }}
+</p>
 </body>
 </html>

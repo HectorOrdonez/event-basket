@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Product\Domain;
 
 use EventBasket\Product\Domain\Product;
 use PHPUnit\Framework\Attributes\Test;

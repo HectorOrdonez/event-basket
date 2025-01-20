@@ -2,22 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use EventBasket\Product\Domain\Repository\ProductRepository;
+
 class LandingPageController extends Controller
 {
 
 
-    public function index()
+    public function index(ProductRepository $repository)
     {
-        return view('landing-page.index');
+        $product = $repository->get('qwe123');
 
-    }//end index()
-
+        return view('landing-page.index', [
+            'productId' => $product->productId,
+            'quantity' => $product->availableStock,
+        ]);
+    }
 
     public function store()
     {
         dd('Storing!');
 
-    }//end store()
-
+    }
 
 }
