@@ -17,6 +17,7 @@ class ProductServiceProvider extends ServiceProvider
             $product = new Product('qwe123');
             $product->receiveStock(5);
             $product->receiveStock(11);
+            $product->ship(5);
 
             $repository->save($product);
 
