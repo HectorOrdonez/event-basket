@@ -8,36 +8,35 @@ use EventBasket\EventSourcing\Event;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-readonly class ProductShipped implements Event
+readonly class ProductCreated implements Event
 {
     public function __construct(
         public UuidInterface $productId,
-        public int           $quantity,
+        public string        $name,
         public Carbon        $date,
     )
     {
 
     }
 
-
     public function toArray(): array
     {
         return [
             'product_id' => $this->productId->toString(),
-            'quantity' => $this->quantity,
+            'name' => $this->name,
             'date' => $this->date->format(DateTimeInterface::ATOM),
         ];
     }
 
-    public static function from(array $payload): self
+    public static function from(array $payload): Event
     {
         assert(array_key_exists('product_id', $payload) && is_string($payload['product_id']));
-        assert(array_key_exists('quantity', $payload) && is_int($payload['quantity']));
+        assert(array_key_exists('name', $payload) && is_string($payload['name']));
         assert(array_key_exists('date', $payload) && is_string($payload['date']));
 
         return new self(
             Uuid::fromString($payload['product_id']),
-            $payload['quantity'],
+            $payload['name'],
             Carbon::createFromFormat(DateTimeInterface::ATOM, $payload['date']),
         );
     }

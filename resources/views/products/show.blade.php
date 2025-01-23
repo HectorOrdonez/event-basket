@@ -7,9 +7,9 @@
     <title>Event Basket</title>
 </head>
 <body>
-<h1>Welcome to Event Basket</h1>
-<h2>Your go-to shop for all things event related</h2>
+<h1>Product page</h1>
 
-<h3><a href="{{route('products')}}">Go to products</a></h3>
+<h5>Product Id: {{ $id }}</h5>
+<h5>Product Name: {{ $name }}</h5>
 </body>
 </html>

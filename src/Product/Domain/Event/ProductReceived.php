@@ -5,13 +5,15 @@ namespace EventBasket\Product\Domain\Event;
 use Carbon\Carbon;
 use DateTimeInterface;
 use EventBasket\EventSourcing\Event;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 readonly class ProductReceived implements Event
 {
     public function __construct(
-        public string $productId,
-        public int    $quantity,
-        public Carbon $date,
+        public UuidInterface $productId,
+        public int           $quantity,
+        public Carbon        $date,
     )
     {
 
@@ -20,7 +22,7 @@ readonly class ProductReceived implements Event
     public function toArray(): array
     {
         return [
-            'product_id' => $this->productId,
+            'product_id' => $this->productId->toString(),
             'quantity' => $this->quantity,
             'date' => $this->date->format(DateTimeInterface::ATOM),
         ];
@@ -32,6 +34,10 @@ readonly class ProductReceived implements Event
         assert(array_key_exists('quantity', $payload) && is_int($payload['quantity']));
         assert(array_key_exists('date', $payload) && is_string($payload['date']));
 
-        return new self($payload['product_id'], $payload['quantity'], Carbon::createFromFormat(DateTimeInterface::ATOM, $payload['date']));
+        return new self(
+            Uuid::fromString($payload['product_id']),
+            $payload['quantity'],
+            Carbon::createFromFormat(DateTimeInterface::ATOM, $payload['date']),
+        );
     }
 }

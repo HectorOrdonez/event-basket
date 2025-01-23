@@ -10,8 +10,8 @@
 <h1>Event Basket</h1>
 <form method="post" action="{{ route('products.store') }}">
     @csrf
-    <label for="products.new.name">Product name</label>
-    <input type="text" name="products.new.name" id="products.new.name" value="product-name" style="color: black"/>
+    <label for="name">Product name</label>
+    <input type="text" name="name" id="name" value="name" style="color: black"/>
     <button type="submit" style="background-color: #ff2d20">Add Product</button>
 </form>
 
