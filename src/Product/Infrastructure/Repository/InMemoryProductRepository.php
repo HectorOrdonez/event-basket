@@ -25,7 +25,7 @@ class InMemoryProductRepository implements ProductRepository
         $product = new Product($productId);
 
         foreach($events as $event) {
-            $product->addEvent($event);
+            $product->applyEvent($event);
         }
 
         return $product;

@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use EventBasket\EventSourcing\Event;
 use EventBasket\Product\Domain\Event\ProductReceived;
 use EventBasket\Product\Domain\Event\ProductShipped;
-use EventBasket\Product\Domain\Exception\NotEnoughStock;
+use EventBasket\Product\Domain\Exception\ProductNotFound;
 
 class Product
 {
@@ -22,20 +22,20 @@ class Product
 
     public function receiveStock(int $quantity): void
     {
-        $this->addEvent(new ProductReceived($this->productId, $quantity, Carbon::now()));
+        $this->applyEvent(new ProductReceived($this->productId, $quantity, Carbon::now()));
     }
 
-    /** @throws NotEnoughStock */
+    /** @throws ProductNotFound */
     public function ship(int $quantity): void
     {
         if ($this->availableStock < $quantity) {
-            throw NotEnoughStock::toShip($this, $quantity);
+            throw ProductNotFound::toShip($this, $quantity);
         }
 
-        $this->addEvent(new ProductShipped($this->productId, $quantity, Carbon::now()));
+        $this->applyEvent(new ProductShipped($this->productId, $quantity, Carbon::now()));
     }
 
-    public function addEvent(Event $event): void
+    public function applyEvent(Event $event): void
     {
         match (true) {
             $event instanceof ProductReceived => $this->applyProductReceived($event),
