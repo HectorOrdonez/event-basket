@@ -1,19 +1,14 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Event Basket</title>
-</head>
-<body>
-<h1>Event Basket</h1>
-<form method="post" action="{{ route('products.store') }}">
-    @csrf
-    <label for="name">Product name</label>
-    <input type="text" name="name" id="name" value="name" style="color: black"/>
-    <button type="submit" style="background-color: #ff2d20">Add Product</button>
-</form>
-
-</body>
-</html>
+<x-layout>
+    <div class="container flex mx-auto my-6 px-4 py-2 bg-blue-100 rounded-md">
+        <div>
+            <div class="text-2xl">Products</div>
+            <form method="post" action="{{ route('products.store') }}">
+                @csrf
+                <label for="name">Product name</label>
+                <input type="text" name="name" id="name" value="name" style="color: black"/>
+                <button type="submit" class="bg-blue-500 rounded-md px-2 py-1">Add Product</button>
+            </form>
+        </div>
+    </div>
+</x-layout>

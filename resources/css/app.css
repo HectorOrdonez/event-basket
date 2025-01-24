@@ -1,3 +1,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+    @apply bg-gray-100;
+}
+.logo-container {
+    width: 50px;
+    height: 50px;
+    @apply bg-gray-100;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.logo-container:hover {
+    background-color: #9CA3AF;
+}
+
+.logo-container img {
+    max-width: 70%;
+    max-height: 70%;
+}
