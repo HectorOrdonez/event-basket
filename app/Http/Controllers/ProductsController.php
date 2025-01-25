@@ -4,17 +4,19 @@ namespace App\Http\Controllers;
 
 use EventBasket\Product\Domain\Product;
 use EventBasket\Product\Domain\Repository\ProductRepository;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 use Ramsey\Uuid\Uuid;
 
 class ProductsController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         return view('products.index');
     }
 
-    public function store(ProductRepository $repository, Request $request)
+    public function store(ProductRepository $repository, Request $request): RedirectResponse
     {
         $name = $request->get('name');
 
@@ -40,5 +42,10 @@ class ProductsController extends Controller
             'id' => $product->productId,
             'name' => $product->name,
         ]);
+    }
+
+    public function create(): View
+    {
+        return view('products.create');
     }
 }

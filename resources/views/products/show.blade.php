@@ -1,15 +1,15 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<x-layout>
+    <div class="container flex mx-auto my-8 py-4 px-4 bg-blue-100 rounded-md">
+        <div class="w-full">
+            <div class="text-2xl">Product id: {{ $id }}</div>
 
-    <title>Event Basket</title>
-</head>
-<body>
-<h1>Product page</h1>
+            <hr class="h-0.5 w-full my-8 bg-black rounded-sm">
 
-<h5>Product Id: {{ $id }}</h5>
-<h5>Product Name: {{ $name }}</h5>
-</body>
-</html>
+            <div class="flex">
+                <div class="pb-4 pr-2 font-semibold">Name:</div>
+                <div>{{ $name }}</div>
+            </div>
+        </div>
+    </div>
+    </div>
+</x-layout>
