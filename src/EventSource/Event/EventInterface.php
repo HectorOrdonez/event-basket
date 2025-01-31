@@ -1,7 +1,7 @@
 <?php
 
-namespace EventBasket\EventSourcing;
-interface Event
+namespace EventBasket\EventSource\Event;
+interface EventInterface
 {
     public function toArray(): array;
 

@@ -3,7 +3,7 @@
 namespace EventBasket\Product\Domain;
 
 use Carbon\Carbon;
-use EventBasket\EventSourcing\Event;
+use EventBasket\EventSource\Event\EventInterface;
 use EventBasket\Product\Domain\Event\ProductCreated;
 use EventBasket\Product\Domain\Event\ProductReceived;
 use EventBasket\Product\Domain\Event\ProductShipped;
@@ -43,7 +43,7 @@ class Product
         $this->applyEvent(new ProductShipped($this->productId, $quantity, Carbon::now()));
     }
 
-    public function applyEvent(Event $event): void
+    public function applyEvent(EventInterface $event): void
     {
         match (true) {
             $event instanceof ProductCreated => $this->applyProductCreated($event),

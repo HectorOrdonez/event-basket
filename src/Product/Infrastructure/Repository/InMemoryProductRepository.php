@@ -2,16 +2,16 @@
 
 namespace EventBasket\Product\Infrastructure\Repository;
 
-use EventBasket\EventSourcing\Event;
+use EventBasket\EventSource\Event\EventInterface;
 use EventBasket\Product\Domain\Product;
 use EventBasket\Product\Domain\Repository\ProductRepository;
 
 class InMemoryProductRepository implements ProductRepository
 {
-    /** @var Event[]  */
+    /** @var EventInterface[]  */
     private array $events;
 
-    /** @param Event[] $events */
+    /** @param EventInterface[] $events */
     public function __construct(array $events = [])
     {
         $this->events = $events;

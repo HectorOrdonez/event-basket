@@ -4,11 +4,11 @@ namespace EventBasket\Product\Domain\Event;
 
 use Carbon\Carbon;
 use DateTimeInterface;
-use EventBasket\EventSourcing\Event;
+use EventBasket\EventSource\Event\EventInterface;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-readonly class ProductShipped implements Event
+readonly class ProductShipped implements EventInterface
 {
     public function __construct(
         public UuidInterface $productId,
