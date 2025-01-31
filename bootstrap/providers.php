@@ -1,8 +1,10 @@
 <?php
 
+use EventBasket\EventSource\EventSourceServiceProvider;
 use EventBasket\Product\ProductServiceProvider;
 
 return [
     App\Providers\AppServiceProvider::class,
-    ProductServiceProvider::class
+    EventSourceServiceProvider::class,
+    ProductServiceProvider::class,
 ];
