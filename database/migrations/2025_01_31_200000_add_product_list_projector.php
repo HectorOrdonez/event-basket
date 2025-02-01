@@ -20,7 +20,7 @@ SQL;
 
         DB::insert($sql, [
             'name' => ProductListProjector::class,
-            'state' => ProjectorState::Pending->value,
+            'state' => ProjectorState::New->value,
             'mode' => ProjectorMode::RunFromBeginning->value,
         ]);
     }

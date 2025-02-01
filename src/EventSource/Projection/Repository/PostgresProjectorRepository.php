@@ -8,7 +8,6 @@ use EventBasket\EventSource\Projection\ProjectorMode;
 use EventBasket\EventSource\Projection\ProjectorRepositoryInterface;
 use EventBasket\EventSource\Projection\ProjectorState;
 use Illuminate\Database\Connection;
-use Illuminate\Support\Facades\DB;
 
 class PostgresProjectorRepository implements ProjectorRepositoryInterface
 {
@@ -26,7 +25,7 @@ class PostgresProjectorRepository implements ProjectorRepositoryInterface
 SQL;
 
         $projectors = $this->db->select($query, [
-            'states' => implode(',' , [
+            'states' => implode(',', [
                 ProjectorState::Booted->name,
                 ProjectorState::Playing->name,
             ])
@@ -35,26 +34,44 @@ SQL;
         dd($projectors);
     }
 
-    public function findPending(): ProjectorCollection
+    public function findNew(): ProjectorCollection
     {
         $query = <<<SQL
         SELECT id, name, state, mode
         FROM projectors
-        WHERE state IN (:pending, :broken, :stalled)
+        WHERE state = :new
 SQL;
 
-        $data = $this->db->select($query, [
-            'pending' => ProjectorState::Pending->value,
-            'broken' => ProjectorState::Broken->value,
-            'stalled' => ProjectorState::Stalled->value,
-        ]);
+        $data = $this->db->select($query, ['new' => ProjectorState::New->value]);
 
         $projectors = new ProjectorCollection();
 
-        foreach($data as $projector) {
-            $projectors[] = new Projector($projector->id, $projector->name, ProjectorState::from($projector->state), ProjectorMode::from($projector->mode));
+        foreach ($data as $projector) {
+            dump('Making instance of ' . $projector->name . '...');
+            $projectors[] = new ($projector->name)(
+                $projector->id,
+                ProjectorState::from($projector->state),
+                ProjectorMode::from($projector->mode,
+                ));
         }
 
         return $projectors;
     }
+
+    public function update(Projector $projector): void
+    {
+        dump('Updating projector ' . $projector->id . ' with state ' . $projector->state->value);
+        $query = <<<SQL
+        UPDATE projectors
+        SET state = :state
+        WHERE id = :id
+SQL;
+
+        $this->db->update($query, [
+            'id' => $projector->id,
+            'state' => $projector->state->value,
+        ]);
+    }
+
+
 }

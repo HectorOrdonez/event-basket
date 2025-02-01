@@ -2,6 +2,8 @@
 
 namespace EventBasket\EventSource\Projection;
 
+use EventBasket\EventSource\Projection\Entity\Projector;
+
 /** @inheritDoc */
 class Projectionist implements ProjectionistInterface
 {
@@ -14,10 +16,13 @@ class Projectionist implements ProjectionistInterface
 
     public function boot(): void
     {
-        dump('Projectionist booting');
-        $projectors = $this->repository->findPending();
-        $projectors->each(fn($projector) => dump('Projector ' . get_class($projector) . ' booting'));
-        usleep($this->sleep);
+        dump('Projectionist is initialising projectors...');
+
+        $newProjectors = $this->repository->findNew();
+        $newProjectors->each(function (Projector $projector) {
+            $projector->initialise();
+            $this->repository->update($projector);
+        });
     }
 
     public function play(): void

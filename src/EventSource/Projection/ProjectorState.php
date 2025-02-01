@@ -6,8 +6,8 @@ use Illuminate\Support\Collection;
 
 enum ProjectorState: string
 {
-    // A projector that is waiting to be booted
-    case Pending = 'pending';
+    // A projector that did not run yet and has no projection
+    case New = 'new';
 
     // The natural state of a projector; it is ready and actively projecting events
     case Playing = 'playing';
