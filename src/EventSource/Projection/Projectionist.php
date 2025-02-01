@@ -2,14 +2,12 @@
 
 namespace EventBasket\EventSource\Projection;
 
-use Illuminate\Support\Collection;
-
 /** @inheritDoc */
 class Projectionist implements ProjectionistInterface
 {
     private int $sleep = 100000;
 
-    public function __construct(private readonly Collection $projectors)
+    public function __construct(private readonly ProjectorRepositoryInterface $repository)
     {
 
     }
@@ -17,13 +15,17 @@ class Projectionist implements ProjectionistInterface
     public function boot(): void
     {
         dump('Projectionist booting');
+        $projectors = $this->repository->findPending();
+        $projectors->each(fn($projector) => dump('Projector ' . get_class($projector) . ' booting'));
+        usleep($this->sleep);
     }
 
     public function play(): void
     {
         dump('Projectionist playing');
         do {
-            $this->projectors->each(fn($projector) => dump('Projector ' . get_class($projector) . ' playing'));
+            $projectors = $this->repository->findActive();
+            $projectors->each(fn($projector) => dump('Projector ' . get_class($projector) . ' playing'));
             usleep($this->sleep);
         } while (true);
     }
