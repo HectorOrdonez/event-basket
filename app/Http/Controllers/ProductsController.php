@@ -34,18 +34,64 @@ class ProductsController extends Controller
         return redirect()->route('products.show', ['id' => $product->productId]);
     }
 
-    public function show(ProductRepository $repository, string $productId)
+    public function show(ProductRepository $repository, string $productId): View
     {
         $product = $repository->get(Uuid::fromString($productId));
 
         return view('products.show', [
             'id' => $product->productId,
             'name' => $product->name,
+            'stock' => $product->availableStock,
+            'events' => $product->events(),
         ]);
     }
 
     public function create(): View
     {
         return view('products.create');
+    }
+
+    public function add(Request $request, ProductRepository $repository): RedirectResponse
+    {
+        $product = $repository->get(Uuid::fromString($request->route('id')));
+        $amount = $request->get('amount');
+
+        $product->receiveStock($amount);
+        $repository->save($product);
+
+        return redirect()->route('products.show', ['id' => $product->productId]);
+    }
+
+    public function ship(Request $request, ProductRepository $repository): RedirectResponse
+    {
+        $product = $repository->get(Uuid::fromString($request->route('id')));
+        $amount = $request->get('amount');
+
+        $product->ship($amount);
+        $repository->save($product);
+
+        return redirect()->route('products.show', ['id' => $product->productId]);
+    }
+
+    public function sell(Request $request, ProductRepository $repository): RedirectResponse
+    {
+        $product = $repository->get(Uuid::fromString($request->route('id')));
+        $amount = $request->get('amount');
+
+        $product->sell($amount);
+        $repository->save($product);
+
+        return redirect()->route('products.show', ['id' => $product->productId]);
+    }
+
+    public function adjust(Request $request, ProductRepository $repository): RedirectResponse
+    {
+        $product = $repository->get(Uuid::fromString($request->route('id')));
+        $amount = $request->get('amount');
+
+        $product->adjust($amount);
+        $repository->save($product);
+
+        return redirect()->route('products.show', ['id' => $product->productId]);
     }
 }

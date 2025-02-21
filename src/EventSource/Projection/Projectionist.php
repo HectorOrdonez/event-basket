@@ -23,6 +23,14 @@ class Projectionist implements ProjectionistInterface
             $projector->initialise();
             $this->repository->update($projector);
         });
+
+        // We need to fetch projectors that require booting
+        // Such projectors are:
+        // - booting: these projectors have just been initialised
+        // - broken: these projectors broke and require booting
+        // - /.s ndingProjector = $this->repository->findPending();
+        // /$eventStore
+
     }
 
     public function play(): void

@@ -7,6 +7,9 @@ use EventBasket\EventSource\Event\EventInterface;
 use EventBasket\Product\Domain\Event\ProductCreated;
 use EventBasket\Product\Domain\Event\ProductReceived;
 use EventBasket\Product\Domain\Event\ProductShipped;
+use EventBasket\Product\Domain\Event\ProductSold;
+use EventBasket\Product\Domain\Event\ProductStockAdjusted;
+use EventBasket\Product\Domain\Exception\CannotReceiveNegativeAmounts;
 use EventBasket\Product\Domain\Exception\NotEnoughStock;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -28,19 +31,41 @@ class Product
         $this->applyEvent(new ProductCreated(Uuid::uuid4(), $name, Carbon::now()));
     }
 
-    public function receiveStock(int $quantity): void
+    /** @throws CannotReceiveNegativeAmounts */
+    public function receiveStock(int $amount): void
     {
-        $this->applyEvent(new ProductReceived($this->productId, $quantity, Carbon::now()));
-    }
-
-    /** @throws NotEnoughStock */
-    public function ship(int $quantity): void
-    {
-        if ($this->availableStock < $quantity) {
-            throw NotEnoughStock::toShip($this, $quantity);
+        if ($amount < 0) {
+            throw CannotReceiveNegativeAmounts::ofStock($this, $amount);
         }
 
-        $this->applyEvent(new ProductShipped($this->productId, $quantity, Carbon::now()));
+        $this->applyEvent(new ProductReceived($this->productId, $amount, Carbon::now()));
+    }
+
+    /** @throws NotEnoughStock|CannotReceiveNegativeAmounts */
+    public function ship(int $amount): void
+    {
+        if ($amount < 0) {
+            throw CannotReceiveNegativeAmounts::toShip($this, $amount);
+        }
+        if ($this->availableStock < $amount) {
+            throw NotEnoughStock::toShip($this, $amount);
+        }
+
+        $this->applyEvent(new ProductShipped($this->productId, $amount, Carbon::now()));
+    }
+
+    public function adjust(int $amount): void
+    {
+        $this->applyEvent(new ProductStockAdjusted($this->productId, $amount, Carbon::now()));
+    }
+
+    public function sell(int $amount): void
+    {
+        if ($amount < 0) {
+            throw CannotReceiveNegativeAmounts::toSell($this, $amount);
+        }
+
+        $this->applyEvent(new ProductSold($this->productId, $amount, Carbon::now()));
     }
 
     public function applyEvent(EventInterface $event): void
@@ -49,6 +74,8 @@ class Product
             $event instanceof ProductCreated => $this->applyProductCreated($event),
             $event instanceof ProductReceived => $this->applyProductReceived($event),
             $event instanceof ProductShipped => $this->applyProductShipped($event),
+            $event instanceof ProductStockAdjusted => $this->applyProductStockAdjusted($event),
+            $event instanceof ProductSold => $this->applyProductSold($event),
             // @todo implement default that breaks things for unknown events
         };
 
@@ -67,6 +94,16 @@ class Product
     }
 
     private function applyProductShipped(ProductShipped $event): void
+    {
+        $this->availableStock -= $event->quantity;
+    }
+
+    private function applyProductStockAdjusted(ProductStockAdjusted $event): void
+    {
+        $this->availableStock += $event->quantity;
+    }
+
+    private function applyProductSold(ProductSold $event): void
     {
         $this->availableStock -= $event->quantity;
     }

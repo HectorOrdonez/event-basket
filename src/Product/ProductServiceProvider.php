@@ -2,7 +2,6 @@
 
 namespace EventBasket\Product;
 
-use EventBasket\Product\Domain\Product;
 use EventBasket\Product\Domain\Repository\ProductRepository;
 use EventBasket\Product\Infrastructure\Repository\PostgresProductRepository;
 use Illuminate\Database\DatabaseManager;
